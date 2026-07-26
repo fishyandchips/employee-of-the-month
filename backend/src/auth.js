@@ -44,6 +44,8 @@ const setCookie = async (res, user_id) => {
 
   res.cookie("session_id", session.rows[0].id, {
     httpOnly: false,
+    secure: true,
+    sameSite: "none",
   });
 };
 
