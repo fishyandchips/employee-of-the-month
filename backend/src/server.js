@@ -108,22 +108,6 @@ app.get("/profile/:id", authenticate, async (req, res) => {
   }
 });
 
-// app.post("/register", async (req, res) => {
-//   const { email, password } = req.body;
-
-//   if (await emailExists(email)) {
-//     return res.status(409).json({error: "User already exists" });
-//   }
-
-//   const id = await createUser(email, password);
-//   await setCookie(res, id);
-
-//   res.json({
-//     success: true,
-//     message: "Account created",
-//   });
-// });
-
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 

@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { useState } from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Login = () => {
@@ -85,12 +85,6 @@ const Login = () => {
 						Sign in
 					</button>
 				</div>
-
-				{/* <p className="text-nowrap text-gray-400">
-					Don't have an account? <Link to="/register" className="underline">
-						Create one here.
-					</Link>
-				</p> */}
 			</form>
 		</div>
 	)

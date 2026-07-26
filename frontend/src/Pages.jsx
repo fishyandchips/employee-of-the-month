@@ -8,7 +8,6 @@ import './App.css'
 import Directory from './components/Directory';
 import Profile from './components/Profile';
 import Login from './components/Login';
-// import Register from './components/Register';
 
 function Pages() {
   return (
@@ -18,7 +17,6 @@ function Pages() {
         <Route path="/directory" element={<Directory />} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/login" element={<Login />} />
-        {/* <Route path="/register" element={<Register />} /> */}
       </Routes>
     </>
   )
