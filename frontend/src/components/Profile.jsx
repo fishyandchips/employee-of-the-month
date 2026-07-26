@@ -15,7 +15,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:5000/profile/${id}`, {
+        const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/profile/${id}`, {
           withCredentials: true
         });
         setEmployee(data.employee);
@@ -33,7 +33,7 @@ const Profile = () => {
   const saveChanges = async () => {  
     try {
       await axios.patch(
-        `http://localhost:5000/profile/${id}`,
+        `${import.meta.env.VITE_API_URL}/profile/${id}`,
         {
           about
         },

@@ -11,7 +11,7 @@ const Header = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const { data } = await axios.get("http://localhost:5000/auth", {
+        const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/auth`, {
           withCredentials: true
         });
         
@@ -31,7 +31,7 @@ const Header = () => {
 
     try {
       await axios.post(
-        "http://localhost:5000/logout",
+        `${import.meta.env.VITE_API_URL}/logout`,
         {},
         {
           withCredentials: true

@@ -13,7 +13,7 @@ const Directory = () => {
 
   const fetchEmployees = async () => {
     try {
-      const { data } = await axios.get("http://localhost:5000/employees", {
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/employees`, {
         params: {
           search,
           status: statusFilter,
