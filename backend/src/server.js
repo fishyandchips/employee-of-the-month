@@ -11,13 +11,21 @@ import {
   getEmployee,
   getCertifications,
 } from "./profile.js";
+import {
+  getScore,
+  getSender,
+  stillCooldown,
+  recipientExists,
+  transfer,
+} from "./transfer.js";
 import cookieParser from "cookie-parser";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: "https://redacted-center.vercel.app",
+  // origin: "https://redacted-center.vercel.app",
+  origin: "http://localhost:5173",
   credentials: true
 }));
 app.use(express.json());
@@ -124,6 +132,90 @@ app.post('/login', async (req, res) => {
 app.post('/logout', async (req, res) => {
   res.clearCookie("session_id");
   res.json({ success: true });
+});
+
+app.get("/score", authenticate, async (req, res) => {
+  try {
+    const score = await getScore(req.userId);
+
+    if (score === null) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({
+      score
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/score", authenticate, async (req, res) => {
+  let { recipientId, amount } = req.body;
+  amount = Number(amount);
+
+  if (!recipientId || !Number.isInteger(amount) || amount <= 0) {
+    return res.status(400).json({ error: "Invalid transfer" });
+  }
+
+  if (amount > 5000000) {
+    return res.status(400).json({ error: "Max transfer is 5,000,000 score" });
+  }
+
+  if (recipientId === req.userId) {
+    return res.status(400).json({ error: "Cannot transfer to self" });
+  }
+
+  try {
+    const sender = await getSender(req.userId);
+    if (!sender) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const { score, last_transfer_at } = sender;
+    if (stillCooldown(last_transfer_at)) {
+      return res.status(400).json({ error: "Cooldown timer has not elapsed" });
+    }
+    if (score < amount) {
+      return res.status(400).json({ error: "Insufficient score" });
+    }
+
+    if (!await recipientExists(recipientId)) {
+      return res.status(404).json({ error: "Recipient not found" });
+    }
+
+    const newSenderScore = await transfer(req.userId, recipientId, amount);
+
+    res.json({
+      score: newSenderScore
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get("/leaderboard", authenticate, async (req, res) => {
+  try {
+    const leaderboard = await client.query(
+      `
+      SELECT 
+        id, 
+        name, 
+        score
+      FROM 
+        employees
+      ORDER BY 
+        score DESC
+      LIMIT 10
+      `
+    );
+
+    res.json({
+      leaderboard: leaderboard.rows
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.listen(PORT, () => {

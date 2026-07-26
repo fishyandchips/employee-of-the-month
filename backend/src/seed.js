@@ -70,9 +70,10 @@ const insertEmployee = async (id, name) => {
       status,
       about,
       department,
-      image
+      image,
+      score
     )
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
     `,
     [
       id,
@@ -82,7 +83,8 @@ const insertEmployee = async (id, name) => {
       faker.helpers.arrayElement(statuses),
       faker.person.bio(),
       faker.helpers.arrayElement(departments),
-      faker.image.avatarGitHub()
+      faker.image.avatarGitHub(),
+      faker.number.int({ min: 1000, max: 200000 })
     ]
   );
 }

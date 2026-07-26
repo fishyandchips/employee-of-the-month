@@ -53,6 +53,8 @@ const Header = () => {
               <h1 className="font-bold text-xl select-none">REDACTED</h1>
               <Link to="/directory">Directory</Link>
               <Link to={`/profile/${userId}`}>Profile</Link>
+              <Link to="/transfer">Transfer</Link>
+              <Link to="/leaderboard">Leaderboard</Link>
             </div>
 
             <button onClick={logOut}>Log out</button>
