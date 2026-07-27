@@ -18,13 +18,18 @@ import {
   recipientExists,
   transfer,
 } from "./transfer.js";
+import {
+  checkCertificationTask,
+  checkPhishingTask,
+} from "./email.js";
 import cookieParser from "cookie-parser";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: "https://redacted-center.vercel.app",
+  // origin: "https://redacted-center.vercel.app",
+  origin: "http://localhost:5173",
   credentials: true
 }));
 app.use(express.json());
@@ -212,6 +217,24 @@ app.get("/leaderboard", authenticate, async (req, res) => {
     res.json({
       leaderboard: leaderboard.rows
     });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/email", async (req, res) => {
+  try {
+    const { from, to, content } = req.body;
+
+    let success = false;
+    
+    if (to === "ablick@redacted.com") {
+      success = await checkCertificationTask(content.toLowerCase());
+    } else if (from === "ahamill@redacted.com" && to === "rpowlowski@redacted.com") {
+      success = await checkPhishingTask(content.toLowerCase());
+    }
+
+    res.json({ success });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
